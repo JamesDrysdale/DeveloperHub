@@ -1,24 +1,46 @@
-import logo from './logo.svg';
 import './App.css';
+import api from './api/axiosConfig';
+import React, { useState, useEffect } from 'react';
+import Layout from './components/Layout';
+import { Routes, Route } from 'react-router-dom';
+import Home from './components/home/Home';
 
 function App() {
+  const [resources, setResources] = useState([]);
+
+  const getResources = async() => {
+
+    try {
+
+      const response = await api.get("/api/v1/resources");
+      console.log(response.data);
+
+      setResources(response.data);
+
+    } catch(err) {
+      console.log(err);
+    }  
+  }
+
+  useEffect(() => {
+    getResources();
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="App">
+        <h1>Developer Hub</h1>
+
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Home resources={resources} />} ></Route>
+          </Route>
+        </Routes>
+      
+
+      </div>
+    </>
+      
   );
 }
 
